@@ -25,7 +25,6 @@ def test_country():
 def test_city():
     data = ip_api.get_data()
     city = data["city"]
-    assert len(city) > 0, "City is empty"
     cities = load_from_json(folder="data", file="cities")
     assert any(c["name"] == city for c in cities), "There is no the city"
 
