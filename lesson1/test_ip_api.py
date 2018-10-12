@@ -6,7 +6,7 @@ from helpers.file import load_from_json
 def test_schema():
     data = ip_api.get_data()
     ip_schema = load_from_json(folder="data", file="ip_schema")
-    validate(data, ip_schema), "The schema is invalid"
+    validate(data, ip_schema)
 
 
 def test_ip():
