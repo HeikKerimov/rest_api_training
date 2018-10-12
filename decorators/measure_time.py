@@ -6,7 +6,7 @@ def measure_time(func):
         before_time = time.time()
         func(*args, **kwargs)
         after_time = time.time() - before_time
-        print(f"{after_time:.2f}")
+        print("{:.2f}".format(after_time))
         return func
     return internal_func
 
