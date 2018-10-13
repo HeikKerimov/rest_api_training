@@ -282,6 +282,7 @@ def test_sort_of_get_books():
 
     # Verify that lists of books are equal:
     assert books == received_books
+    assert result.status_code == 200
 
 
 def test_limit_of_get_books():
@@ -308,5 +309,6 @@ def test_limit_of_get_books():
 
     # Verify that lists of books are equal:
     assert books == received_books
+    assert result.status_code == 200
 
 
