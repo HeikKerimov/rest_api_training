@@ -1,12 +1,11 @@
-import os
 import jsonpickle
 
 
 def get_file(folder=None, name=None):
     if folder is None:
-        file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../", "{0}.json".format(name))
+        file = "../{0}.json".format(name)
     else:
-        file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../", "{0}/{1}.json".format(folder, name))
+        file = "../{0}/{1}.json".format(folder, name)
     return file
 
 
