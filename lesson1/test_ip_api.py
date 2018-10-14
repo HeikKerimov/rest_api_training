@@ -1,3 +1,5 @@
+import pytest
+
 import api.ip_api as ip_api
 from jsonschema import validate
 from helpers.file import load_from_json
@@ -39,3 +41,8 @@ def test_lon():
     data = ip_api.get_data()
     lon = data["lon"]
     assert lon >= 0, "The Lon is less than 0"
+
+
+if __name__ == "__main__":
+    # в PyCharm удобно запускать как обычный скрипт. Без командной строки
+    pytest.main()
