@@ -51,8 +51,9 @@ def get_list_of_books():
         result = BOOKS
 
         if sort_filter == 'by_title':
-            result = sorted(result, key=lambda x: x['title'])
-        if list_limit > 0:
+
+            result = sorted(result, key=lambda x: x['title'].lower())
+        if list_limit >= 0:
             result = result[:list_limit]
         return flask.jsonify(result)
 

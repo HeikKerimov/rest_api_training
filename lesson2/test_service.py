@@ -263,14 +263,14 @@ def test_sort_of_get_books():
 
     # Check that a list of books is not empty
     if list_is_empty():
-        for i in range(get_random_value(numbers=True, length=1)):
+        for i in range(5):
             add_book()
 
     # Get all books:
     books = get_books()
 
     # Sort books by title:
-    books = [book['title'] for book in books]
+    books = [book['title'].lower() for book in books]
     books = sorted(books)
 
     url = "{0}/books?sort=by_title".format(HOST)
@@ -278,7 +278,34 @@ def test_sort_of_get_books():
     # Send GET request to get all books sorted by title:
     result = requests.get(url, cookies=auth_cookie())
     received_books = result.json()
-    received_books = [book['title'] for book in received_books]
+    received_books = [book['title'].lower() for book in received_books]
+
+    # Verify that lists of books are equal:
+    assert books == received_books
+    assert result.status_code == 200
+
+
+def test_limit_get_empty_list():
+    """ This test checks that user gets empty list of books"""
+
+    limit = 0
+
+    # Check that a list of books is not empty
+    if list_is_empty():
+        for i in range(5):
+            add_book()
+
+    # Get all books:
+    books = get_books()
+
+    # Get limited list of books:
+    books = books[:limit]
+
+    url = "{0}/books?limit={1}".format(HOST, limit)
+
+    # Send GET request to get limited books:
+    result = requests.get(url, cookies=auth_cookie())
+    received_books = result.json()
 
     # Verify that lists of books are equal:
     assert books == received_books
@@ -286,13 +313,13 @@ def test_sort_of_get_books():
 
 
 def test_limit_of_get_books():
-    """ This test checks that user gets limited list of books"""
+    """ This test checks that user gets a list of books"""
 
     limit = 1
 
     # Check that a list of books is not empty
     if list_is_empty():
-        for i in range(get_random_value(numbers=True, length=1)):
+        for i in range(5):
             add_book()
 
     # Get all books:
