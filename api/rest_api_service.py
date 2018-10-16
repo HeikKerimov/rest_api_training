@@ -1,6 +1,3 @@
-#!/usr/bin/python3
-# -*- encoding=utf8 -*-
-
 from uuid import uuid4
 import flask
 from flask import Flask
@@ -15,6 +12,10 @@ basic_auth = BasicAuth(app)
 
 BOOKS = []
 SESSIONS = []
+
+
+class InvalidUsage(Exception):
+    status_code = 400
 
 
 def verify_cookie(req):
@@ -34,7 +35,7 @@ def get_auth():
 
     cookie = str(uuid4())
     SESSIONS.append(cookie)
-    print(SESSIONS)
+
     return flask.jsonify({'auth_cookie': cookie})
 
 
@@ -51,13 +52,13 @@ def get_list_of_books():
         result = BOOKS
 
         if sort_filter == 'by_title':
-
-            result = sorted(result, key=lambda x: x['title'].lower())
-        if list_limit >= 0:
+            result = sorted(result, key=lambda x: x['title'])
+        if list_limit > 0:
             result = result[:list_limit]
-        return flask.jsonify(result)
 
-    return ''
+        return flask.jsonify(BOOKS)
+
+    raise InvalidUsage('No valid auth cookie provided!')
 
 
 @app.route('/books/<book_id>', methods=['GET'])
@@ -73,6 +74,28 @@ def get_book(book_id):
 
         return flask.jsonify(result)
 
+    raise InvalidUsage('No valid auth cookie provided!')
+
+
+@app.route('/books/<book_id>', methods=['PUT'])
+def update_book(book_id):
+    """ This function updates information about some book. """
+
+    if verify_cookie(request):
+
+        for i, book in enumerate(BOOKS):
+            # Find the book with this ID:
+            if book['id'] == book_id:
+                book['title'] = request.values.get('title', book['title'])
+                book['author'] = request.values.get('author', book['author'])
+
+                # Update information about this book:
+                BOOKS[i] = book
+
+                return flask.jsonify(book)
+
+    raise InvalidUsage('No valid auth cookie provided!')
+
 
 @app.route('/books/<book_id>', methods=['DELETE'])
 def delete_book(book_id):
@@ -81,14 +104,14 @@ def delete_book(book_id):
     global BOOKS
 
     if verify_cookie(request):
-        result = {}
-
         # Create new list of book and skip one book
         # with specified id:
         new_books = [b for b in BOOKS if b['id'] != book_id]
         BOOKS = new_books
 
-        return flask.jsonify(result)
+        return flask.jsonify({'deleted': book_id})
+
+    raise InvalidUsage('No valid auth cookie provided!')
 
 
 @app.route('/add_book', methods=['POST'])
@@ -99,16 +122,17 @@ def add_book():
 
     if verify_cookie(request):
         book_id = str(uuid4())
-        title = (request.values.get('title', ''))
-        author = (request.values.get('author', 'No Name'))
+        title = request.values.get('title', '')
+        author = request.values.get('author', 'No Name')
 
         new_book = {'id': book_id, 'title': title, 'author': author}
 
+        # add new book to the list:
         BOOKS.append(new_book)
 
         return flask.jsonify(new_book)
 
-    return flask.jsonify('ERROR')
+    raise InvalidUsage('No valid auth cookie provided!')
 
 
 if __name__ == "__main__":

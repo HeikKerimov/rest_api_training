@@ -24,8 +24,7 @@ do_something(100000000)
 
 def decorator_with_arguments(number):
     def my_decorator(func):
-        @functools.wraps(func)
-        def function_that_runs_func(*args, **kwargs):
+        def internal_func(*args, **kwargs):
             print("In the decorator!")
             if number == 13:
                 print("Not running the function!")
@@ -35,7 +34,7 @@ def decorator_with_arguments(number):
                 toc = timeit.default_timer() - tic
                 print('Total time for func is:', round(toc, 8))
             print("After the decorator!")
-        return function_that_runs_func
+        return internal_func
     return my_decorator
 
 
