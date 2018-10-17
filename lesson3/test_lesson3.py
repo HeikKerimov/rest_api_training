@@ -9,11 +9,17 @@ def create_books():
     # Get the list of books:
     all_books = get_all_books()
 
-    # If the list is empty than create some books:
+    # If the list is empty then create some books:
     if len(all_books) == 0:
         add_book({'title': 'Python', 'author': 'Gogol'})
         add_book({'title': 'QA', 'author': 'Heik'})
         add_book({'title': 'Ali', 'author': 'Ali'})
+
+
+def test_login():
+    """ This test checks that user is able to login """
+    cookies = auth()
+    assert validate_uuid4(cookies.get('my_cookie'))
 
 
 @pytest.mark.parametrize('title', ['', 'some test', u'тест', '&^#*@(', 'a'*1000000])
@@ -129,3 +135,22 @@ def test_limit(create_books, limit):
 
     # Verify that lists are equal:
     assert limited_books == books
+
+
+def test_limit_and_sort(create_books):
+    """ This test checks combinetion of sort and limit options """
+
+    limit = 2
+
+    # Get sorted and limited list of books:
+    filtered_books = get_all_books(sort="by_title", limit=limit)
+
+    # Get the list of books:
+    books = get_all_books()
+
+    # Filter this list:
+    books = sorted(books, key=lambda x: x['title'])
+    books = books[:limit]
+
+    # Verify that lists are equal:
+    assert filtered_books == books
