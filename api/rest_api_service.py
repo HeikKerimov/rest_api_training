@@ -53,10 +53,10 @@ def get_list_of_books():
 
         if sort_filter == 'by_title':
             result = sorted(result, key=lambda x: x['title'])
-        if list_limit > 0:
+        if list_limit >= 0:
             result = result[:list_limit]
 
-        return flask.jsonify(BOOKS)
+        return flask.jsonify(result)
 
     raise InvalidUsage('No valid auth cookie provided!')
 

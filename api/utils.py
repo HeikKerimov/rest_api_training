@@ -98,10 +98,16 @@ def auth():
     return {'my_cookie': data['auth_cookie']}
 
 
-def get_all_books():
+def get_all_books(sort=None, limit=None):
     """ This function returns full list of books. """
-
     url = '{0}/books'.format(host)
+    if sort == 'by_title':
+        url = '{0}?sort={1}'.format(url, sort)
+    if limit is not None and sort is None:
+        url = '{0}?limit={1}'.format(url, limit)
+    elif limit is not None and sort is not None:
+        url = '{0}&limit={1}'.format(url, limit)
+
     response = get(url, cookies=auth())
 
     return response.json()
