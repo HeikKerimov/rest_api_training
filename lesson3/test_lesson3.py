@@ -142,7 +142,7 @@ def test_limit(create_books, limit):
 
 
 def test_limit_and_sort(create_books):
-    """ This test checks combinetion of sort and limit options """
+    """ This test checks combination of sort and limit options """
 
     limit = 2
 
