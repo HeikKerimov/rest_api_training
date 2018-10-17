@@ -19,7 +19,10 @@ def create_books():
 def test_login():
     """ This test checks that user is able to login """
 
+    # Login and get auth_cookie:
     cookies = auth()
+
+    # Verify that auth_cookie is correct:
     assert validate_uuid4(cookies.get('my_cookie'))
 
 
